@@ -4,14 +4,17 @@ require('express-async-errors');
 const express = require('express');
 const app = express();
 
-const notFound = require('./middleware/not-found.js');
-const errorHandler = require('./middleware/error-handler.js');
-
+//* routers
 const authRouter = require('./routes/auth.js');
 const todosRouter = require('./routes/todos.js');
 
+//* error handlers
+const notFound = require('./middleware/not-found.js');
+const errorHandler = require('./middleware/error-handler.js');
+
 app.use(express.json());
 
+//* routes
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/todos', todosRouter);
 
