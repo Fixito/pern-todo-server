@@ -1,4 +1,5 @@
 const { BadRequestError, UnauthenticatedError } = require('../errors');
+const { StatusCodes } = require('http-status-codes');
 const db = require('../db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -37,7 +38,7 @@ const register = async (req, res) => {
     }
   );
 
-  res.send({ user: { name: user.name }, token });
+  res.status(StatusCodes.CREATED).send({ user: { name: user.name }, token });
 };
 
 const login = async (req, res) => {
@@ -65,7 +66,7 @@ const login = async (req, res) => {
     }
   );
 
-  res.send({ user: { name: user.name }, token });
+  res.status(StatusCodes.OK).send({ user: { name: user.name }, token });
 };
 
 module.exports = { login, register };
