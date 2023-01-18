@@ -5,6 +5,7 @@ const createTodo = async (req, res) => {
 };
 
 const getAllTodos = async (req, res) => {
+  console.log(req.user);
   res.send('Récupère toutes les tâches');
 };
 

@@ -4,6 +4,8 @@ require('express-async-errors');
 const express = require('express');
 const app = express();
 
+const authenticateUser = require('./middleware/authentication.js');
+
 //* routers
 const authRouter = require('./routes/auth.js');
 const todosRouter = require('./routes/todos.js');
@@ -16,7 +18,7 @@ app.use(express.json());
 
 //* routes
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/todos', todosRouter);
+app.use('/api/v1/todos', authenticateUser, todosRouter);
 
 app.use(notFound);
 app.use(errorHandler);
