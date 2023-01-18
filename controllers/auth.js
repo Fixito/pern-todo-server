@@ -1,4 +1,4 @@
-const { BadRequestError } = require('../errors');
+const { BadRequestError, UnauthenticatedError } = require('../errors');
 const db = require('../db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -41,7 +41,31 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  res.send('Connexion');
+  const { email, password } = req.body;
+
+  const {
+    rows: [user]
+  } = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+
+  if (!user) {
+    throw new UnauthenticatedError('Identifiants incorrects');
+  }
+
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordCorrect) {
+    throw new UnauthenticatedError('Identifiants incorrects');
+  }
+
+  const token = jwt.sign(
+    { userID: user.user_id, name: user.name },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_LIFETIME
+    }
+  );
+
+  res.send({ user: { name: user.name }, token });
 };
 
 module.exports = { login, register };
