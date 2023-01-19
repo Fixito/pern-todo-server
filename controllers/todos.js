@@ -69,4 +69,21 @@ const deleteTodo = async (req, res) => {
   res.status(StatusCodes.OK).send({ todo });
 };
 
-module.exports = { createTodo, getAllTodos, upDateTodo, deleteTodo };
+const clearTodos = async (req, res) => {
+  const { userID } = req.user;
+
+  const { rows: todos } = await db.query(
+    'DELETE FROM todos WHERE user_id = $1 RETURNING *',
+    [userID]
+  );
+
+  res.status(StatusCodes.OK).send({ todos });
+};
+
+module.exports = {
+  createTodo,
+  getAllTodos,
+  upDateTodo,
+  deleteTodo,
+  clearTodos
+};
